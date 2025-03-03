@@ -118,3 +118,6 @@ AUTH_USER_MODEL = 'accounts.User'
 
 from config.settings.drf import *  # type: ignore # noqa: E402, F403
 from config.settings.drf_spectacular import *  # type: ignore # noqa: E402, F403
+from config.settings.debug_toolbar import *  # type: ignore # noqa: E402, F403
+from config.settings.simple_jwt import *  # type: ignore # noqa: E402, F403
+
