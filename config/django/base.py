@@ -23,6 +23,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "drf_spectacular",
+    "mail_templated",
 ]
 
 LOCAL_APPS = [
@@ -90,6 +91,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Redis
+REDIS_HOST = env("REDIS_HOST")
+REDIS_PORT = env("REDIS_PORT")
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -113,11 +117,19 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = "accounts.User"
+
+# Email
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 25
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
+EMAIL_USE_TLS = False
+FROM_EMAIL = "order@gmail.com"
 
 
 from config.settings.drf import *  # type: ignore # noqa: E402, F403
 from config.settings.drf_spectacular import *  # type: ignore # noqa: E402, F403
 from config.settings.debug_toolbar import *  # type: ignore # noqa: E402, F403
 from config.settings.simple_jwt import *  # type: ignore # noqa: E402, F403
-
