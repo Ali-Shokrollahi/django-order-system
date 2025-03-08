@@ -1,6 +1,7 @@
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from drf_spectacular.utils import extend_schema
 
 
@@ -45,4 +46,29 @@ class UserCreateApi(APIView):
 
         return Response(
             self.UserCreateOutputSerializer(user).data, status=status.HTTP_201_CREATED
+        )
+
+
+class UserEmailActivateApi(APIView):
+    def get(self, request, token):
+        service = UserService()
+        service.verify_user_email(token=token)
+        return Response(
+            {"detail": "Email confirmed successfully"}, status=status.HTTP_200_OK
+        )
+
+
+class UserResendVerificationApi(APIView):
+    class ResendVerificationInputSerializer(serializers.Serializer):
+        email = serializers.EmailField()
+
+    @extend_schema(request=ResendVerificationInputSerializer)
+    def post(self, request):
+        serializer = self.ResendVerificationInputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = UserService()
+        service.resend_verification_email(email=serializer.validated_data["email"])
+        return Response(
+            {"detail": "Verification email resent successfully"},
+            status=status.HTTP_200_OK,
         )

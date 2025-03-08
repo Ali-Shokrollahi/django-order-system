@@ -20,7 +20,7 @@ class BaseRepository(Generic[T]):
         return self.model.objects.create(**data)
 
     def update(self, instance: T, **data) -> T:
-        """Update an instance without fetching it again."""
+        """Update an instance."""
         self.model.objects.filter(pk=instance.pk).update(**data)
         instance.refresh_from_db()
         return instance

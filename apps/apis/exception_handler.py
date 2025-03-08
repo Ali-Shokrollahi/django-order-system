@@ -19,7 +19,6 @@ def custom_exception_handler(exc, ctx):
 
     response = exception_handler(exc, ctx)
 
-    # If unexpected error occurs (server error, etc.)
     if response is None:
         if isinstance(exc, ServiceException):
             data = {"message": exc.message, "extra": exc.extra}

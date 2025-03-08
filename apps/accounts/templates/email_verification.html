@@ -1,0 +1,11 @@
+{% extends "mail_templated/base.tpl" %}
+
+{% block subject %}
+    Email verification
+{% endblock %}
+
+{% block html %}
+    <p>Hello <strong>{{ user.email }}</strong></p>
+    <a href="{{ activation_url }}">Please click here to activate your account.</a>
+
+{% endblock %}

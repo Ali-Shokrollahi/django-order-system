@@ -10,6 +10,8 @@ DEBUG = env.bool("DJANGO_DEBUG", default=True)
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["*"])
 
+APP_DOMAIN = env("APP_DOMAIN", default="http://localhost:8000")
+
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -122,7 +124,7 @@ AUTH_USER_MODEL = "accounts.User"
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "localhost"
-EMAIL_PORT = 25
+EMAIL_PORT = 2525
 EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
 EMAIL_USE_TLS = False

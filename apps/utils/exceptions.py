@@ -11,6 +11,13 @@ class ServiceException(Exception):
         super().__init__(message)
 
 
+class BadRequestException(ServiceException):
+    """Raised when a request is invalid due to client error or state."""
+
+    def __init__(self, message="Bad request", extra: dict = None):
+        super().__init__(message, status_code=status.HTTP_400_BAD_REQUEST, extra=extra)
+
+
 class ResourceNotFoundException(ServiceException):
     """Raised when a requested resource is not found."""
 
@@ -40,3 +47,4 @@ class ExternalServiceException(ServiceException):
         super().__init__(
             message, status_code=status.HTTP_503_SERVICE_UNAVAILABLE, extra=extra
         )
+
