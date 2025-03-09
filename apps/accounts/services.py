@@ -60,7 +60,7 @@ class UserService:
                 service_name="Email service", extra={"service message": str(e)}
             )
 
-    def verify_user_email(self, *, token) -> None:
+    def verify_user_email(self, *, token):
         try:
             email_token = EmailVerificationToken(token=token)
         except TokenError as e:
@@ -71,7 +71,7 @@ class UserService:
         user = self.user_repository.get_by_id(id=user_id)
         if user.is_verified:
             raise BadRequestException(message="This account is already verified")
-        self.user_repository.update_user_verification(user=user)
+        return self.user_repository.update_user_verification(user=user)
 
     def resend_verification_email(self, *, email: str) -> None:
         """Resend verification email to an unverified user"""

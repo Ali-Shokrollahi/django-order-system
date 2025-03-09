@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
 from .apis import UserCreateApi, UserEmailVerifyApi, UserResendVerificationApi
 
 urlpatterns = [
-    path("register/", UserCreateApi.as_view(), name="register"),
+    path("register/", UserCreateApi.as_view(), name="register_user"),
     path('email/verify/<str:token>/', UserEmailVerifyApi.as_view(), name='email_verify'),
     path('email/resend/', UserResendVerificationApi.as_view(), name='email_resend'),
     
