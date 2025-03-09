@@ -4,7 +4,9 @@ from rest_framework.views import APIView
 
 from drf_spectacular.utils import extend_schema
 
-
+from apps.apis.schema_utils import (
+    get_success_response,
+)
 from .models import User
 from .services import UserService
 
@@ -33,7 +35,13 @@ class UserCreateApi(APIView):
             fields = ("email", "role", "created_at")
 
     @extend_schema(
-        request=UserCreateInputSerializer, responses=UserCreateOutputSerializer
+        request=UserCreateInputSerializer,
+        responses={
+            201: get_success_response(
+                serializer_name="UserCreateSuccess",
+                data_serializer=UserCreateOutputSerializer,
+            ),
+        },
     )
     def post(self, request):
         serializer = self.UserCreateInputSerializer(data=request.data)
@@ -45,16 +53,28 @@ class UserCreateApi(APIView):
         )
 
         return Response(
-            self.UserCreateOutputSerializer(user).data, status=status.HTTP_201_CREATED
+            {
+                "message": "User Created successfully",
+                "data": self.UserCreateOutputSerializer(user).data,
+            },
+            status=status.HTTP_201_CREATED,
         )
 
 
-class UserEmailActivateApi(APIView):
+class UserEmailVerifyApi(APIView):
+    @extend_schema(
+        responses={
+            200: get_success_response(
+                serializer_name="UserEmailVerifySuccess",
+            ),
+        },
+    )
     def get(self, request, token):
         service = UserService()
         service.verify_user_email(token=token)
         return Response(
-            {"detail": "Email confirmed successfully"}, status=status.HTTP_200_OK
+            {"message": "Email confirmed successfully", "data": None},
+            status=status.HTTP_200_OK,
         )
 
 
@@ -62,13 +82,20 @@ class UserResendVerificationApi(APIView):
     class ResendVerificationInputSerializer(serializers.Serializer):
         email = serializers.EmailField()
 
-    @extend_schema(request=ResendVerificationInputSerializer)
+    @extend_schema(
+        request=ResendVerificationInputSerializer,
+        responses={
+            200: get_success_response(
+                serializer_name="UserResendVerificationSuccess",
+            ),
+        },
+    )
     def post(self, request):
         serializer = self.ResendVerificationInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         service = UserService()
         service.resend_verification_email(email=serializer.validated_data["email"])
         return Response(
-            {"detail": "Verification email resent successfully"},
+            {"message": "Verification email resent successfully", "data": None},
             status=status.HTTP_200_OK,
         )
