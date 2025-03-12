@@ -1,9 +1,7 @@
+from uuid import uuid4 as uuid
 import django_filters
 from apps.products.models import Product
 from apps.utils.exceptions import (
-    BadRequestException,
-    ResourceAlreadyExistsException,
-    ExternalServiceException,
     ResourceNotFoundException,
 )
 from .repositories import ProductRepository
@@ -34,3 +32,29 @@ class ProductService:
         products = self.product_repository.get_all_products()
 
         return self.ProductFilterSet(filters, products).qs
+
+    def get_product_by_id(self, product_id: uuid):
+        """Get a product by its ID"""
+        product = self.product_repository.get(pk=product_id)
+
+        if not product:
+            raise ResourceNotFoundException(resource_name="Product")
+
+        return product
+
+    def get_product_detail(self, product_id: uuid):
+        """Get a product detail by its ID"""
+        product = self.product_repository.get_product_detail(product_id)
+
+        if not product:
+            raise ResourceNotFoundException(resource_name="Product")
+
+        return product
+
+    def update_product(self, product: Product, **data):
+        """Update a product by its ID"""
+        return self.product_repository.update(instance=product, **data)
+
+    def delete_product(self, product: Product):
+        """Delete a product by its ID"""
+        return self.product_repository.delete(instance=product)

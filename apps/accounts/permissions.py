@@ -9,3 +9,8 @@ class IsSellerPermission(BasePermission):
             hasattr(request.user, "role") and
             request.user.role == User.RoleChoices.SELLER
         )
+    
+class IsOwnerPermission(BasePermission):
+    """Permission to allow only the owner of the resource."""
+    def has_object_permission(self, request, view, obj):
+        return obj.seller == request.user
