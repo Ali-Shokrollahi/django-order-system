@@ -4,7 +4,6 @@ from django.core import mail
 from apps.accounts.services import EmailVerificationToken
 from apps.utils.exceptions import (
     ResourceAlreadyExistsException,
-    ExternalServiceException,
     BadRequestException,
     ResourceNotFoundException,
 )

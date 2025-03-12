@@ -1,13 +1,11 @@
 import pytest
-from django.core import mail
-
-from apps.accounts.services import UserService
 from tests.factories import UserFactory
 
 
 @pytest.fixture
 def user_service():
     """Fixture for UserService instance."""
+    from apps.accounts.services import UserService
     return UserService()
 
 
@@ -26,6 +24,7 @@ def verified_user():
 @pytest.fixture(autouse=True)
 def clear_mail_outbox():
     """Fixture to clear mail.outbox before each test."""
+    from django.core import mail
     mail.outbox.clear()
 
 
