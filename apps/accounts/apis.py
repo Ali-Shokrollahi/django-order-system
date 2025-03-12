@@ -4,9 +4,7 @@ from rest_framework.views import APIView
 
 from drf_spectacular.utils import extend_schema
 
-from apps.apis.schema_utils import (
-    get_success_response,
-)
+from apps.apis.serializers import MessageSerializer
 from .models import User
 from .services import UserService
 
@@ -35,13 +33,7 @@ class UserCreateApi(APIView):
             fields = ("email", "role", "created_at")
 
     @extend_schema(
-        request=UserCreateInputSerializer,
-        responses={
-            201: get_success_response(
-                serializer_name="UserCreateSuccess",
-                data_serializer=UserCreateOutputSerializer,
-            ),
-        },
+        request=UserCreateInputSerializer, responses={201: UserCreateOutputSerializer}
     )
     def post(self, request):
         serializer = self.UserCreateInputSerializer(data=request.data)
@@ -53,27 +45,20 @@ class UserCreateApi(APIView):
         )
 
         return Response(
-            {
-                "message": "User Created successfully",
-                "data": self.UserCreateOutputSerializer(user).data,
-            },
+            self.UserCreateOutputSerializer(user).data,
             status=status.HTTP_201_CREATED,
         )
 
 
 class UserEmailVerifyApi(APIView):
     @extend_schema(
-        responses={
-            200: get_success_response(
-                serializer_name="UserEmailVerifySuccess",
-            ),
-        },
+        responses=MessageSerializer
     )
     def get(self, request, token):
         service = UserService()
         service.verify_user_email(token=token)
         return Response(
-            {"message": "Email confirmed successfully", "data": None},
+            {"message": "Email confirmed successfully"},
             status=status.HTTP_200_OK,
         )
 
@@ -83,12 +68,7 @@ class UserResendVerificationApi(APIView):
         email = serializers.EmailField()
 
     @extend_schema(
-        request=ResendVerificationInputSerializer,
-        responses={
-            200: get_success_response(
-                serializer_name="UserResendVerificationSuccess",
-            ),
-        },
+        request=ResendVerificationInputSerializer, responses=MessageSerializer
     )
     def post(self, request):
         serializer = self.ResendVerificationInputSerializer(data=request.data)

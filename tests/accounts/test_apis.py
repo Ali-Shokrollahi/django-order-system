@@ -19,8 +19,7 @@ class TestUserCreateApi:
         create_user_data["confirm_password"] = create_user_data["password"]
         response = self.post_request(self.url, create_user_data)
         assert response.status_code == status.HTTP_201_CREATED
-        assert response.json()["message"] == "User Created successfully"
-        data = response.json()["data"]
+        data = response.json()
         assert data["email"] == create_user_data["email"]
         assert "created_at" in data
 
@@ -47,7 +46,6 @@ class TestUserEmailVerifyApi:
         response = self.get_request(url)
         assert response.status_code == status.HTTP_200_OK
         assert response.json()["message"] == "Email confirmed successfully"
-        assert response.json()["data"] is None
 
 
 @pytest.mark.django_db

@@ -54,7 +54,7 @@ class UserService:
             to=[user.email],
         )
         try:
-            message.send()
+            message.send(fail_silently=True) # Change to False to see the errors
         except Exception as e:
             raise ExternalServiceException(
                 service_name="Email service", extra={"service message": str(e)}
