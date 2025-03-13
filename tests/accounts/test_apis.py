@@ -12,7 +12,7 @@ class TestUserCreateApi:
     @pytest.fixture(autouse=True)
     def setup(self, api_request):
         self.request = api_request
-        self.url = reverse("register_user")
+        self.url = reverse("user_register")
 
     def test_create_user_success(self, create_user_data):
         """Test successful user registration returns correct HTTP response."""
