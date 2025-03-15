@@ -26,7 +26,7 @@ class Order(CreatedAtModel):
     )
 
     def __str__(self):
-        return f"Order {self.id} - {self.user.email} ({self.status})"
+        return f"Order {self.id} - {self.customer.email} ({self.status})"
 
 
 class OrderItem(models.Model):

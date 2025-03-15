@@ -1,12 +1,32 @@
 import pytest
 from rest_framework.test import APIClient
-from .factories import UserFactory
+from .factories import UserFactory, ProductFactory, OrderFactory, OrderItemFactory
 
 
 @pytest.fixture
 def api_client():
     """Fixture to provide API client."""
     return APIClient()
+
+
+@pytest.fixture
+def user_factory():
+    return UserFactory
+
+
+@pytest.fixture
+def product_factory():
+    return ProductFactory
+
+
+@pytest.fixture
+def order_factory():
+    return OrderFactory
+
+
+@pytest.fixture
+def order_item_factory():
+    return OrderItemFactory
 
 
 @pytest.fixture

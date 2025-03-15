@@ -3,6 +3,7 @@ from decimal import Decimal
 import factory
 from django.contrib.auth import get_user_model
 from apps.products.models import Product
+from apps.orders.models import Order, OrderItem
 
 User = get_user_model()
 
@@ -37,3 +38,19 @@ class ProductFactory(factory.django.DjangoModelFactory):
     description = factory.Faker("text")
     price = Decimal("99.99")
     seller = factory.SubFactory(UserFactory)
+
+class OrderFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Order
+
+    customer = factory.SubFactory(UserFactory, role=User.RoleChoices.CUSTOMER)
+    total_amount = Decimal("199.99")
+    status = Order.StatusChoices.PENDING
+
+class OrderItemFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = OrderItem
+
+    order = factory.SubFactory(OrderFactory)
+    product = factory.SubFactory(ProductFactory)
+    quantity = 1

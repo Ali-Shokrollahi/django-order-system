@@ -1,6 +1,4 @@
 import pytest
-from tests.factories import ProductFactory
-
 
 @pytest.fixture
 def product_service():
@@ -9,14 +7,10 @@ def product_service():
     return ProductService()
 
 
-@pytest.fixture
-def product_factory():
-    return ProductFactory
-
 
 @pytest.fixture
-def product(seller):
-    return ProductFactory.create(seller=seller)
+def product(seller, product_factory):
+    return product_factory.create(seller=seller)
 
 
 @pytest.fixture

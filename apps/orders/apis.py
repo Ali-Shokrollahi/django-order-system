@@ -19,6 +19,7 @@ class OrderCreateApi(APIView):
                 "quantity": serializers.IntegerField(min_value=1),
             },
             many=True,
+            allow_empty=False,
         )
 
     class OrderCreateOutputSerializer(serializers.ModelSerializer):
