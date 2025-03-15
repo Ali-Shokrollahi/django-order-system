@@ -1,4 +1,3 @@
-
 from apps.utils.exceptions import ResourceNotFoundException
 from apps.orders.models import Order
 from apps.orders.repositories import OrderRepository
@@ -19,7 +18,9 @@ class OrderService:
         }
         product_ids = list(product_dict.keys())
 
-        products = self.product_repository.get_products_by_ids(product_ids, fields=["id", "price"])
+        products = self.product_repository.get_products_by_ids(
+            product_ids, fields=["id", "price"]
+        )
         products_by_id = {str(product.id): product for product in products}
 
         # Ensure all products exist
@@ -39,3 +40,11 @@ class OrderService:
             products_data=product_dict,
             total_amount=total_amount,
         )
+
+    def get_customer_orders(self, customer_id: int, filters: dict = {}):
+        return self.order_repository.get_customer_orders_by_id(
+            customer_id, filters=filters
+        )
+
+    def get_order_details(self, order_id: int):
+        return self.order_repository.get_order_and_order_items_by_id(order_id)

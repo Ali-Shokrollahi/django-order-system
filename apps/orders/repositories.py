@@ -1,4 +1,4 @@
-from django.db.models import QuerySet, Sum, F
+from django.db.models import QuerySet, Sum, F, Prefetch
 from django.contrib.auth.models import User
 from django_filters import FilterSet
 
@@ -36,6 +36,12 @@ class OrderRepository(BaseRepository[Order]):
 
         return order
 
+    def get_customer_orders_by_id(
+        self, customer_id: int, fields: list[str] = [], filters: dict = {}
+    ) -> QuerySet[Order]:
+        orders = self.filter(customer_id=customer_id).only(*fields)
+        return self.FilterSet(filters, orders).qs
+
     def get_seller_orders_by_id(
         self, seller_id: int, filters: dict = {}
     ) -> QuerySet[Order]:
@@ -49,3 +55,18 @@ class OrderRepository(BaseRepository[Order]):
             .distinct()
         )
         return self.FilterSet(filters, orders).qs
+
+    def get_order_and_order_items_by_id(
+        self, order_id: int, fields: list[str] = []
+    ) -> Order:
+        return (
+            self.filter(id=order_id)
+            .only(*fields)
+            .prefetch_related(
+                Prefetch(
+                    "orderitem_set",
+                    queryset=OrderItem.objects.select_related("product"),
+                )
+            )
+            .first()
+        )
