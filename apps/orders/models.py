@@ -36,3 +36,13 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} (Order {self.order.id})"
+
+
+class Invoice(CreatedAtModel):
+    order = models.OneToOneField(
+        Order, on_delete=models.CASCADE, related_name="invoice"
+    )
+    pdf_file = models.FileField(upload_to="invoices/%Y/%m/%d/", unique=True)
+
+    def __str__(self):
+        return f"Invoice for Order {self.order.id}"

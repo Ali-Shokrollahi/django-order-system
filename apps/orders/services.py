@@ -1,12 +1,16 @@
 from apps.utils.exceptions import ResourceNotFoundException
 from apps.orders.models import Order
-from apps.orders.repositories import OrderRepository
 from apps.products.repositories import ProductRepository
+
+from .repositories import InvoiceRepository, OrderRepository
+from .invoices import InvoicePDFGenerator
 
 
 class OrderService:
     order_repository = OrderRepository()
     product_repository = ProductRepository()
+    invoice_repository = InvoiceRepository()
+    invoice_pdf_generator = InvoicePDFGenerator()
 
     def create_order(self, customer, products_data: list[dict]) -> Order:
         """
@@ -35,11 +39,15 @@ class OrderService:
             for pid, product in products_by_id.items()
         )
 
-        return self.order_repository.create_order(
-            customer=customer,
-            products_data=product_dict,
-            total_amount=total_amount,
+        order = self.order_repository.create_order(
+            customer=customer, products_data=product_dict, total_amount=total_amount
         )
+
+        pdf_buffer = self.invoice_pdf_generator.generate(order)
+        self.invoice_repository.create_invoice(order, pdf_buffer)
+        pdf_buffer.close()
+
+        return order
 
     def get_customer_orders(self, customer_id: int, filters: dict = {}):
         return self.order_repository.get_customer_orders_by_id(
@@ -47,4 +55,19 @@ class OrderService:
         )
 
     def get_order_details(self, order_id: int):
-        return self.order_repository.get_order_and_order_items_by_id(order_id)
+        order = self.order_repository.get_order_and_order_items_by_id(order_id)
+        if not order:
+            raise ResourceNotFoundException(resource_name="Order)")
+        return order
+
+    def get_order_by_id(self, order_id: int):
+        order = self.order_repository.get(pk=order_id)
+        if not order:
+            raise ResourceNotFoundException(resource_name="Order")
+        return order
+
+    def get_order_invoice(self, order_id: int):
+        invoice = self.invoice_repository.get_invoice_by_order_id(order_id)
+        if not invoice:
+            raise ResourceNotFoundException(resource_name="Invoice")
+        return invoice

@@ -1,9 +1,10 @@
+from io import BytesIO
 from django.db.models import QuerySet, Sum, F, Prefetch
 from django.contrib.auth.models import User
 from django_filters import FilterSet
 
 from apps.utils.base_repo import BaseRepository
-from apps.orders.models import Order, OrderItem
+from apps.orders.models import Order, OrderItem, Invoice
 
 
 class OrderRepository(BaseRepository[Order]):
@@ -70,3 +71,16 @@ class OrderRepository(BaseRepository[Order]):
             )
             .first()
         )
+
+
+class InvoiceRepository(BaseRepository[Order]):
+    def __init__(self):
+        super().__init__(Invoice)
+
+    def create_invoice(self, order: Order, pdf_buffer: BytesIO) -> Invoice:
+        invoice = self.create(order=order)
+        invoice.pdf_file.save(f"{order.id}.pdf", pdf_buffer)
+        return invoice
+
+    def get_invoice_by_order_id(self, order_id: int) -> Invoice:
+        return self.filter(order_id=order_id).first()

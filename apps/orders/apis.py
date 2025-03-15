@@ -1,3 +1,4 @@
+from django.http import FileResponse
 from rest_framework import serializers, status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -116,3 +117,24 @@ class OrderDetailApi(APIView):
         self.check_object_permissions(request, order)
 
         return Response(self.OrderDetailOutputSerializer(order).data)
+
+
+class OrderInvoiceApi(APIView):
+    owner_field = "customer"
+    permission_classes = [IsAuthenticated, IsOwnerPermission]
+
+    @extend_schema(
+        responses={200: {"content": {"application/pdf": {}}}},
+        description="Download the invoice PDF for a specific order.",
+    )
+    def get(self, request, order_id):
+        service = OrderService()
+        order = service.get_order_by_id(order_id)
+        self.check_object_permissions(request, order)
+        invoice = service.get_order_invoice(order_id)
+        return FileResponse(
+            invoice.pdf_file,
+            as_attachment=True,
+            filename=f"invoice_{order.id}.pdf",
+            status=200,
+        )
