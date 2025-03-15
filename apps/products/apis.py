@@ -13,7 +13,7 @@ from apps.accounts.permissions import IsSellerPermission, IsOwnerPermission
 
 
 class ProductCreateApi(APIView):
-    permission_classes = [IsAuthenticated, IsSellerPermission]
+    permission_classes = [IsSellerPermission]
 
     class ProductCreateInputSerializer(serializers.Serializer):
         name = serializers.CharField(max_length=255)

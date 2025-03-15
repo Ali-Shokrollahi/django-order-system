@@ -5,8 +5,7 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from apps.apis.utils import inline_serializer
 from apps.orders.models import Order
-from apps.orders.services import OrderService 
-from apps.products.models import Product
+from apps.orders.services import OrderService
 
 
 class OrderCreateApi(APIView):

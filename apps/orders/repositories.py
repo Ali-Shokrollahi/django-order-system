@@ -1,4 +1,4 @@
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Sum, F
 from apps.orders.models import Order, OrderItem
 from django.contrib.auth.models import User
 
@@ -29,3 +29,14 @@ class OrderRepository(BaseRepository[Order]):
         OrderItem.objects.bulk_create(order_items)
 
         return order
+
+    def get_orders_by_seller(self, seller_id: int) -> QuerySet[Order]:
+        return (
+            self.filter(orderitem__product__seller_id=seller_id)
+            .annotate(
+                seller_total_amount=Sum(
+                    F("orderitem__product__price") * F("orderitem__quantity")
+                )
+            )
+            .distinct()
+        )

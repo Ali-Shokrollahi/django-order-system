@@ -6,6 +6,7 @@ class IsSellerPermission(BasePermission):
     """Permission to allow only users with the 'seller' role."""
     def has_permission(self, request, view):
         return (
+            request.user.is_authenticated and
             hasattr(request.user, "role") and
             request.user.role == User.RoleChoices.SELLER
         )

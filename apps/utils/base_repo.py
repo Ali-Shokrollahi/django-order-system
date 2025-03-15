@@ -14,6 +14,10 @@ class BaseRepository(Generic[T]):
     def filter(self, **filters) -> QuerySet[T]:
         """Get a queryset of filtered objects."""
         return self.model.objects.filter(**filters)
+    
+    def all(self) -> QuerySet[T]:
+        """Get a queryset of all objects."""
+        return self.model.objects.all()
 
     def create(self, **data) -> T:
         """Create a new object."""

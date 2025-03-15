@@ -3,6 +3,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import as_serializer_error
 from rest_framework.views import exception_handler
 from rest_framework.response import Response
+from rest_framework_simplejwt.exceptions import InvalidToken
 
 from apps.utils.exceptions import ServiceException
 
@@ -16,6 +17,7 @@ def custom_exception_handler(exc, ctx):
     """
     if isinstance(exc, DjangoValidationError):
         exc = ValidationError(as_serializer_error(exc))
+
 
     response = exception_handler(exc, ctx)
 

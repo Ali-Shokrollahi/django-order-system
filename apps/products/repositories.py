@@ -17,8 +17,8 @@ class ProductRepository(BaseRepository[Product]):
             name=name, description=description, price=price, seller=seller
         )
 
-    def get_all_products(self, fields: list[str]) -> QuerySet[Product]:
-        return self.model.objects.only(*fields).all()
+    def get_all_products(self, fields: list[str] = []) -> QuerySet[Product]:
+        return self.all().only(*fields)
 
     def get_products_by_ids(
         self, product_ids: list[uuid], fields: list[str]
@@ -33,3 +33,6 @@ class ProductRepository(BaseRepository[Product]):
             .filter(id=product_id)
             .first()
         )
+
+    def get_products_by_seller(self, seller_id: int) -> QuerySet[Product]:
+        return self.filter(seller_id=seller_id)

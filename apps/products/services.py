@@ -27,7 +27,7 @@ class ProductService:
             name=name, description=description, price=price, seller=seller
         )
 
-    def get_all_products(self, filters: dict = dict()):
+    def get_all_products(self, filters: dict = {}):
         """Get all products from database"""
         products = self.product_repository.get_all_products(
             fields=["id", "name", "price", "seller_id"]
