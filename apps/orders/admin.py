@@ -9,12 +9,12 @@ class OrderAdmin(admin.ModelAdmin):
 
     ordering = ("-created_at",)
 
-    readonly_fields = ("id", "created_at", "updated_at")
+    readonly_fields = ("id", "created_at")
 
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ("order", "product", "quantity")
-    list_filter = "order"
+    list_filter = ("order",)
 
     ordering = ("-order",)

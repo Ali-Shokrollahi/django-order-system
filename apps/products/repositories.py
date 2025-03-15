@@ -17,14 +17,19 @@ class ProductRepository(BaseRepository[Product]):
             name=name, description=description, price=price, seller=seller
         )
 
-    def get_all_products(self) -> QuerySet[Product]:
-        return self.model.objects.only("id", "name", "price", "seller_id").all()
+    def get_all_products(self, fields: list[str]) -> QuerySet[Product]:
+        return self.model.objects.only(*fields).all()
 
-    def get_product_detail(self, product_id: uuid) -> Product:
+    def get_products_by_ids(
+        self, product_ids: list[uuid], fields: list[str]
+    ) -> QuerySet[Product]:
+        """Fetch multiple products by their IDs in one query."""
+        return self.model.objects.filter(id__in=product_ids).only(*fields)
+
+    def get_product_detail(self, product_id: uuid, fields: list[str]) -> Product:
         return (
             Product.objects.select_related("seller")
-            .only("id", "name", "price", "description", "seller__id", "seller__email")
+            .only(*fields)
             .filter(id=product_id)
             .first()
         )
-

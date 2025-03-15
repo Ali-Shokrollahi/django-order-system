@@ -29,7 +29,9 @@ class ProductService:
 
     def get_all_products(self, filters: dict = dict()):
         """Get all products from database"""
-        products = self.product_repository.get_all_products()
+        products = self.product_repository.get_all_products(
+            fields=["id", "name", "price", "seller_id"]
+        )
 
         return self.ProductFilterSet(filters, products).qs
 
@@ -44,7 +46,9 @@ class ProductService:
 
     def get_product_detail(self, product_id: uuid):
         """Get a product detail by its ID"""
-        product = self.product_repository.get_product_detail(product_id)
+        product = self.product_repository.get_product_detail(
+            product_id, fields=["id", "name", "description", "price", "seller_id"]
+        )
 
         if not product:
             raise ResourceNotFoundException(resource_name="Product")
