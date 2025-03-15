@@ -20,8 +20,8 @@ class Product(TimeStampModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=["seller"], name="idx_product_seller"),
             models.Index(fields=["name"], name="idx_product_name"),
+            models.Index(fields=["price"], name="idx_product_price"),
         ]
 
     def __str__(self):

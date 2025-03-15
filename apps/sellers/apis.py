@@ -1,6 +1,5 @@
-from rest_framework import serializers, status
+from rest_framework import serializers
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 from apps.apis.pagination import LimitOffsetPagination, get_paginated_response

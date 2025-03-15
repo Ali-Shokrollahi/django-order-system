@@ -1,13 +1,19 @@
 from django.db.models import QuerySet, Sum, F
-from apps.orders.models import Order, OrderItem
 from django.contrib.auth.models import User
+from django_filters import FilterSet
 
 from apps.utils.base_repo import BaseRepository
+from apps.orders.models import Order, OrderItem
 
 
 class OrderRepository(BaseRepository[Order]):
     def __init__(self):
         super().__init__(Order)
+
+    class FilterSet(FilterSet):
+        class Meta:
+            model = Order
+            fields = ["status"]
 
     def create_order(
         self, customer: User, products_data: dict[str, int], total_amount: float
@@ -30,8 +36,10 @@ class OrderRepository(BaseRepository[Order]):
 
         return order
 
-    def get_orders_by_seller(self, seller_id: int) -> QuerySet[Order]:
-        return (
+    def get_seller_orders_by_id(
+        self, seller_id: int, filters: dict = {}
+    ) -> QuerySet[Order]:
+        orders = (
             self.filter(orderitem__product__seller_id=seller_id)
             .annotate(
                 seller_total_amount=Sum(
@@ -40,3 +48,4 @@ class OrderRepository(BaseRepository[Order]):
             )
             .distinct()
         )
+        return self.FilterSet(filters, orders).qs

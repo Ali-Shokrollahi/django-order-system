@@ -117,7 +117,7 @@ class ProductDetailApi(APIView):
     )
     def get(self, request, product_id):
         service = ProductService()
-        product = service.get_product_by_id(product_id=product_id)
+        product = service.get_product_detail(product_id=product_id)
 
         return Response(
             self.ProductDetailOutputSerializer(product).data, status=status.HTTP_200_OK

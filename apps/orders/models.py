@@ -19,7 +19,10 @@ class Order(CreatedAtModel):
     products = models.ManyToManyField(Product, through="OrderItem")
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(
-        max_length=20, choices=StatusChoices, default=StatusChoices.PENDING
+        max_length=20,
+        choices=StatusChoices,
+        default=StatusChoices.PENDING,
+        db_index=True,
     )
 
     def __str__(self):
