@@ -7,7 +7,8 @@ from apps.orders.models import Order
 
 
 class InvoicePDFGenerator:
-    def generate(self, order: Order) -> BytesIO:
+    @staticmethod
+    def generate(order: Order) -> BytesIO:
         """Generate a PDF invoice for the given order and return it as a buffer."""
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=letter)

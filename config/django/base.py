@@ -1,6 +1,6 @@
 import os
 
-from config.env import APPS_DIR, BASE_DIR, env
+from config.env import BASE_DIR, env
 
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
@@ -96,9 +96,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Redis
-REDIS_HOST = env("REDIS_HOST")
-REDIS_PORT = env("REDIS_PORT")
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -141,3 +138,4 @@ from config.settings.drf import *  # type: ignore # noqa: E402, F403
 from config.settings.drf_spectacular import *  # type: ignore # noqa: E402, F403
 from config.settings.debug_toolbar import *  # type: ignore # noqa: E402, F403
 from config.settings.simple_jwt import *  # type: ignore # noqa: E402, F403
+from config.settings.celery import *  # type: ignore # noqa: E402, F403
