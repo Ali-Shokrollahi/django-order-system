@@ -1,17 +1,19 @@
+from celery import chain
+from django.db import transaction
 from apps.utils.exceptions import ResourceNotFoundException
 from apps.orders.models import Order
 from apps.products.repositories import ProductRepository
 
 from .repositories import InvoiceRepository, OrderRepository
-from .invoices import InvoicePDFGenerator
+from .tasks import generate_and_save_invoice, send_order_confirmation_email
 
 
 class OrderService:
     order_repository = OrderRepository()
     product_repository = ProductRepository()
     invoice_repository = InvoiceRepository()
-    invoice_pdf_generator = InvoicePDFGenerator()
 
+    @transaction.atomic
     def create_order(self, customer, products_data: list[dict]) -> Order:
         """
         Create an order with total amount calculation, fetching products via ProductRepository.
@@ -43,9 +45,10 @@ class OrderService:
             customer=customer, products_data=product_dict, total_amount=total_amount
         )
 
-        pdf_buffer = self.invoice_pdf_generator.generate(order)
-        self.invoice_repository.create_invoice(order, pdf_buffer)
-        pdf_buffer.close()
+        chain(
+            generate_and_save_invoice.s(order.id),
+            send_order_confirmation_email.si(order.id, customer.email),
+        )()
 
         return order
 
